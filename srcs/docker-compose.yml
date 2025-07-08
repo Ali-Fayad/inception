@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress_files:/var/www/html
+    networks:
+      - inception
+    restart: always
+    env_file: .env
+
+  wordpress:
+    build: ./requirements/wordpress
+    volumes:
+      - wordpress_files:/var/www/html
+    networks:
+      - inception
+    restart: always
+    env_file: .env
+    depends_on:
+      - mariadb
+
+  mariadb:
+    build: ./requirements/mariadb
+    volumes:
+      - wordpress_db:/var/lib/mysql
+    networks:
+      - inception
+    restart: always
+    env_file: .env
+
+volumes:
+  wordpress_files:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/afayad/data/wordpress
+  wordpress_db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/afayad/data/mariadb
+
+
+networks:
+  inception:
+
