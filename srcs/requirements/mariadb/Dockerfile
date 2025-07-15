@@ -1,17 +1,21 @@
 FROM debian:bookworm
 
-# Install MariaDB
-RUN apt-get update && \
-    apt-get install -y mariadb-server && \
-    rm -rf /var/lib/apt/lists/*
-RUN sed -i 's/^bind-address\s*=.*/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN apt-get update && apt-get install -y \
+    mariadb-server \
+    mariadb-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy setup script
-COPY tools/init.sh /init.sh
-RUN chmod +x /init.sh
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/init_db.sh /usr/local/bin/init_db.sh
 
-# Expose port (optional, for debugging)
+RUN chmod +x /usr/local/bin/init_db.sh
+
+RUN mkdir -p /var/run/mysqld && \
+    chown -R mysql:mysql /var/run/mysqld && \
+    chown -R mysql:mysql /var/lib/mysql
+
 EXPOSE 3306
 
-# Run the MariaDB setup script
-CMD ["bash", "/init.sh"]
+USER mysql
+
+ENTRYPOINT ["/usr/local/bin/init_db.sh"]

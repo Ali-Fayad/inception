@@ -1,0 +1,29 @@
+[mysqld]
+user                    = mysql
+port                    = 3306
+bind-address            = 0.0.0.0
+skip-networking         = false
+datadir                 = /var/lib/mysql
+socket                  = /var/run/mysqld/mysqld.sock
+pid-file                = /var/run/mysqld/mysqld.pid
+log-error               = /var/log/mysql/error.log
+slow_query_log_file     = /var/log/mysql/mysql-slow.log
+long_query_time         = 2
+log-queries-not-using-indexes
+
+innodb_buffer_pool_size = 128M
+innodb_log_file_size    = 10M
+innodb_file_per_table   = 1
+innodb_open_files       = 400
+innodb_io_capacity      = 400
+innodb_flush_method     = O_DIRECT
+
+max_connections         = 200
+connect_timeout         = 60
+wait_timeout            = 120
+max_allowed_packet      = 16M
+thread_cache_size       = 128
+sort_buffer_size        = 4M
+bulk_insert_buffer_size = 16M
+tmp_table_size          = 32M
+max_heap_table_size     = 32M

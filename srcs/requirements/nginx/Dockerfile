@@ -1,14 +1,23 @@
 FROM debian:bookworm
 
-RUN apt update && apt install -y nginx openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    nginx \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -subj "/C=LB/ST=Beirut/L=Beirut/O=42/OU=afayad/CN=afayad.42.fr" \
-    -keyout /etc/ssl/private/nginx.key \
-    -out /etc/ssl/certs/nginx.crt
+# Copy configuration files
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY tools/setup_ssl.sh /usr/local/bin/setup_ssl.sh
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+RUN chmod +x /usr/local/bin/setup_ssl.sh
+
+# Create SSL directory
+RUN mkdir -p /etc/ssl/certs /etc/ssl/private
+
+# Create nginx user directories
+RUN mkdir -p /var/cache/nginx /var/log/nginx /var/lib/nginx && \
+    chown -R www-data:www-data /var/cache/nginx /var/log/nginx /var/lib/nginx
 
 EXPOSE 443
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/usr/local/bin/setup_ssl.sh"]
