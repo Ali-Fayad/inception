@@ -17,18 +17,31 @@ You will create a fully functional **WordPress website** running on top of an **
 
 ```
 .
-├── srcs/
-│   ├── docker-compose.yml
-│   ├── containers/
-│   │   ├── Nginx/
-│   │   │   └── Dockerfile
-│   │   ├── WordPress/
-│   │   │   └── Dockerfile
-│   │   └── MariaDB/
-│   │       └── Dockerfile
-│   └── ...
 ├── Makefile
-└── README.md
+├── README.md
+└── srcs
+    ├── docker-compose.yml
+    ├── requirements
+    │   ├── mariadb
+    │   │   ├── Dockerfile
+    │   │   ├── conf
+    │   │   │   └── 50-server.cnf
+    │   │   └── tools
+    │   │       └── init_db.sh
+    │   ├── nginx
+    │   │   ├── Dockerfile
+    │   │   ├── conf
+    │   │   │   └── nginx.conf
+    │   │   └── tools
+    │   │       └── setup_ssl.sh
+    │   └── wordpress
+    │       ├── Dockerfile
+    │       ├── conf
+    │       │   └── www.conf
+    │       └── tools
+    │           └── setup_wp.sh
+    └── tools
+
 ```
 
 - **Nginx**: Serves the WordPress site over HTTPS (SSL).
